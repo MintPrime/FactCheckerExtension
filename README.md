@@ -1,7 +1,6 @@
 # AIFactCheckerExtension - The Legally Distinct Paper Clip "Klippy"!
 
-**"Klippy" Fact Checker**
-An AI browser extension for fact checking (using Google Gemini*). Select or paste text or a screenshot and send it to the Legally Distinct "Klippy" (gemini) who will search online to verify whether your fact is true.
+The **"Klippy" Fact Checker Extension** is an AI browser extension for fact checking (using Google Gemini*). Select or paste text or a screenshot and send it to the Legally Distinct "Klippy" (gemini) who will search online to verify whether your fact is true.
 
 Functions:
 - Select text in a browser and select "Klippy's" Fact Checking function to call on him to check your fact.
