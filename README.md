@@ -1,26 +1,30 @@
-# FactCheckerExtension
+# FactCheckerExtension - The Legally Distinct Paper Clip "Klippy"!
 
-**"Clippy" Fact Checker**
-"Ein KI-Browserextension zur Faktenprüfung (mittels Google Gemini*). Markiere Text, füge Text bzw einen Screenshot von Text für Clippy ein und er prüft online, ob der Text die Wahrheit entspricht."
+**"Klippy" Fact Checker**
+Ein KI-Browserextension zur Faktenprüfung (mittels Google Gemini*). Markiere Text, füge Text bzw einen Screenshot von Text für Clippy ein und er prüft online, ob der Text die Wahrheit entspricht." 
+An AI browser extension for fact checking (using Google Gemini*). Select or paste text or a screenshot and send it to the Legally Distinct "Klippy" (gemini) who will search online to verify whether your fact is true.
 
-Funktionen:
-- Text im Browser markieren und über das Kontextmenü (Rechtsklick) die „Truth Checking“-Funktion von Clippy aufrufen.
-- Clippy jederzeit aufrufen und direkt auf seine Funktionen zugreifen. Texte aus der Zwischenablage oder sogar Bilder einfügen: Er extrahiert den Text aus dem Bild und überprüft ihn auf Fakten (hier können Sie ihm auch eigene Fragen stellen).
+Functions:
+- Select text in a browser and select "Klippy's" Fact Checking function to call on him to check your fact.
+- Call on "Klippy" through the extension button (maybe a dedicated bookmark, toggleable of course) to access him and all his features on demand. Paste text manually or even provide a screenshot of a fact for him to check. You can also ask him other questions and Gemin- "Klippy" will... "gladly" answer!
 
-Architektur
-- JavaScript-Erweiterungs-Shell für die Browser-Integration
-- Clippy-Seitenleisten-UI auf Basis von Angular
-- Backend mit Node.js: Gemini-API-Schlüssel, Prompt-Verarbeitung, JSON, Datenverarbeitung und Caching
-- Textextraktion aus Bildern mittels Python und RapidOCR
+Architecture 
+- JavaScript-Extension-Shell for a browser integration.
+- "Klippy's" side bar and window implemented using Angular.
+- Back-end through Node.js: the Gemini*-API-key, prompt and data processing and caching.
+- text extraction from images using the python library RapidOCR.
 
-KI-Verarbeitung
-- Gemini* führt eine Vorverarbeitung der Eingabe durch:
-- > Prüfung, ob es sich bei der Eingabe um einen Fakt, eine Meinung oder einen Witz handelt; Nicht-Fakten werden verworfen.
-- > Normalisierung der Fakten zu präzisen Behauptungen – Recherche zu diesen Behauptungen.
+AI Workload
+- Gemini* does a preliminary processing round on the input:
+- > Checks, whether the input is a real fact or statement and not a joke or opinion. Non-facts will not be processed further.
+- > Normalisation of the input to create concrete statements, use said statements to perform online research.
 
-Anderer KI-API Services können natürlich verwendet werden. Ein Gratis Version könnte zum Testen verwendet werden. 
-Token Preise sind im Bild angegeben:
+*Other AI services could be easily used, Gemini was chosen because of pricing and direct integration/access to google search.
+
+Potential token cost:
 $/1 000 000 tokens
-**EINGABE** - 0.75$ für Text
-**AUSGABE** - 4.50$ für Text
-**Google Suche** - 5000 kostenlose Suchanfragen pro Monat. 14$ pro 1000 weitere Anfragen.
+- **INPUT** - 0.75$ für Text
+- **OUTPUT** - 4.50$ für Text
+**Google Search** - 5000 free search queries/month. 14$/1000 further queries.
+
+**minimising reasoning/deep thinking is important to save on tokens, as these count as output tokens.
