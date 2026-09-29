@@ -21,8 +21,8 @@ AI Workload
 
 Potential token cost:
 $/1 000 000 tokens
-- **INPUT** - 0.75$ für Text
-- **OUTPUT** - 4.50$ für Text
+- **INPUT** - 0.75$ for text
+- **OUTPUT** - 4.50$ for text
 **Google Search** - 5000 free search queries/month. 14$/1000 further queries.
 
 **minimising reasoning/deep thinking is important to save on tokens, as these count as output tokens.
