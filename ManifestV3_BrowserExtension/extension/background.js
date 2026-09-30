@@ -1,21 +1,23 @@
-chrome.sidePanel
-  .setPanelBehavior({ openPanelOnActionClick: true})
-  .catch((error) => console.error(error));
-
-chrome.runtime.onInstalled.addListener(() => 
-{
-  chrome.contextMenus.create(
-  {
-    id: "klippy_check",
-    title: "klippy is that true",
+chrome.runtime.onInstalled.addListener(() => {  //create the context menu function. 
+  chrome.contextMenus.create( {
+    id: "klippyCheck",
+    title: "klippy is this real",
     contexts: ["selection"]
-  });
-});
+      }
+    );
+  }
+);
 
-chrome.contextMenus.onClicked.addListener((info, tab) => 
-{
-  if (info.menuItemId === "klippy_check") 
-    {
-      chrome.sidePanel.open({tabId: tab.id});
-    }
-})
+ 
+chrome.action.onClicked.addListener((tab) => { // toggle the widget when clicking the extension icon.
+  chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_KLIPPY" });
+}
+);
+
+
+chrome.contextMenus.onClicked.addListener((info, tab) => { // toggle the widget through the context menu when selecting text.
+  if (info.menuItemId === "klippyCheck") {
+    chrome.tabs.sendMessage(tab.id, { type: "SHOW_KLIPPY" });
+  }
+}
+);

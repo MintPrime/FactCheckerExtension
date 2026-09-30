@@ -1,21 +1,30 @@
 {
   "manifest_version" : 3,
   "name" : "Klippy Fact Checker",
-  "version" : "0.103",
+  "version" : "0.110",
 
   "description" : "Klippy's Fact Checking Service. Select text or ask Klippy directly to confirm the validity of claims or statements through Google Gemini's google search function.",
-  "version_name" : "v0.103",
+  "version_name" : "v0.110",
 
-  "permissions": ["sidePanel", "contextMenus"],
+  "permissions": ["contextMenus"],
   "host_permissions": ["http://localhost:3000/*"],
   
-  "background": {
-    "service_worker": "background.js"
-  },
-  "side_panel": {
-    "default_path": "sidepanel/index.html"
-  },
-  "action": {
-    "default_title": "Summon Klippy"
-  }
+  "content_scripts":
+  [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "background":
+    {
+      "service_worker": "background.js"
+    },
+
+  "action":
+    {
+      "default_title": "Summon Klippy"
+    }
 }
