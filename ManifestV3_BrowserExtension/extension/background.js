@@ -13,7 +13,6 @@ chrome.action.onClicked.addListener((tab) => { // toggle the widget when clickin
 }
 );
 
-
 chrome.contextMenus.onClicked.addListener((info, tab) => { // toggle the widget through the context menu when selecting text.
   if (info.menuItemId === "klippyCheck") {
     chrome.tabs.sendMessage(tab.id, { type: "SHOW_KLIPPY" });
