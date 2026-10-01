@@ -8,12 +8,10 @@ chrome.runtime.onInstalled.addListener(() => {  //create the context menu functi
   }
 );
 
- 
 chrome.action.onClicked.addListener((tab) => { // toggle the widget when clicking the extension icon.
   chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_KLIPPY" });
 }
 );
-
 
 chrome.contextMenus.onClicked.addListener((info, tab) => { // toggle the widget through the context menu when selecting text.
   if (info.menuItemId === "klippyCheck") {
