@@ -1,32 +1,36 @@
 /*  content.js is klippy's window and lair. 
     ...it's the widget. this replaces the v0.103 side panel.    */
 
-let aifceWidget = null;     //define the widget.
+var aifceWidget = null;                                         //define the widget.
 
 function createWidget() {
-        console.log("document.body at widget creation:", document.body, "readyState:", document.readyState);    
-        if (aifceWidget) return; //if this isn't null, fall through. 
-
-        if (!document.body) {
-            console.log("god must first let there be light, can't exist before that.");
+        console.log("DEBUG: document.body at widget creation:", document.body, "readyState: ", document.readyState);       //debug log to check if the page exists. 
+        if (aifceWidget) return;                                //if the widget exists already, exit. 
+    
+        if (!document.body) {                                   //if the page doesn't exist yet, add an event listener to do it when the page is ready. 
+            console.log("klippy: god hasn't let there be light yet, patience, patience...");    
             document.addEventListener("DOMContentLoaded", createWidget);
-            return
+            return;
         }
 
-        aifceWidget = document.createElement("div");    //define the widget. this is the window.
-        aifceWidget.id = "klippy-widget-root";          //widget id
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
 
-        Object.assign(aifceWidget.style, {
+        aifceWidget = document.createElement("div");            //define the widget. this is the window.
+        aifceWidget.id = "klippyWidgetRoot";                    //widget id.
+
+        Object.assign(aifceWidget.style, {                      //styling the widget.
                 position: "fixed",
-                top: "100px",
-                left: "100px",
+                top: "75px",
+                right: "33px",
                 width: "250px",
                 height: "150px",
                 backgroundColor: "#fef9e7",
                 border: "2px solid #e6e5e5",
                 borderRadius: "8px",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                zIndex: "2147483647", // maximum z-index. this puts the window on top of everything.
+                zIndex: "2147483647",                           // maximum z-index. this puts the window on top of everything.
                 padding: "12px",
                 fontFamily: "sans-serif",
                 fontSize: "14px",
@@ -34,7 +38,7 @@ function createWidget() {
             }
         );
 
-        const closeButton = document.createElement("button");   //create the close button element
+        const closeButton = document.createElement("button");   //create the close button element.
         closeButton.textContent = "x";
         Object.assign(closeButton.style, {
                 position: "absolute",
@@ -47,7 +51,7 @@ function createWidget() {
                 lineHeight: "1"
             }
         );
-        closeButton.addEventListener("click", hideWidget);      //close button functionality - trigger hideWidget on click
+        closeButton.addEventListener("click", hideWidget);      //close button functionality - trigger hideWidget on click.
 
         const textElement = document.createElement("div");
         textElement.textContent = "yep, it's me. The Legally Distinct Paper Clip Klippy."; //temporary text to display in the window.
@@ -56,27 +60,66 @@ function createWidget() {
         aifceWidget.appendChild(closeButton);
         aifceWidget.appendChild(textElement);
         document.body.appendChild(aifceWidget);
+
+        aifceWidget.addEventListener("mousedown", (e) => {          //dragging functionality for the widget.
+            if (e.target === closeButton) return;                   //don't start dragging if the close button is clicked.
+            if (e.button !== 0) return;                             //drag with left click only.
+            
+            isDragging = true;
+
+            const rect = aifceWidget.getBoundingClientRect();       // get the current position of the widget.
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+        
+            aifceWidget.addEventListener("contextmenu", (e) => { e.preventDefault(); });    // prevent the context menu from appearing while dragging. 
+            e.preventDefault();                                     // prevent text selection while dragging.
+
+            document.addEventListener("mousemove", onDragMove);
+            document.addEventListener("mouseup", onDragEnd);
+            }
+        );
+
+        function onDragMove(e) {                                    //dragging functionality for the widget.
+            if (!isDragging) return;
+            
+            aifceWidget.style.cursor = "grabbing";                  // change the cursor icon to grabbing.
+
+            const newLeft = e.clientX - dragOffsetX;
+            const newTop = e.clientY - dragOffsetY;
+
+            aifceWidget.style.left = `${newLeft}px`;
+            aifceWidget.style.top = `${newTop}px`;
+        }
+
+        function onDragEnd() {                                  //clear event listeners when dragging stops.
+            isDragging = false;
+
+            aifceWidget.style.cursor = "default";                  // change the cursor icon back to default.
+
+            document.removeEventListener("mousemove", onDragMove);
+            document.removeEventListener("mouseup", onDragEnd);
+        }
 }
 
 
 
 function showWidget() {   //open widget
+        console.log("klippy rises")
         createWidget();
         aifceWidget.style.display = "block";
     }
 
 function hideWidget() {   //dismiss widget (disable display)
         if (aifceWidget) {
+                console.log("klippy falls")
                 aifceWidget.style.display = "none";
             }
     }
 
 function toggleWidget() {     //if the widget is active, dismiss it. if it isn't open it.
         if (!aifceWidget || aifceWidget.style.display === "none") {
-                console.log("klippy rises")
                 showWidget();
             } else {
-                console.log("klippy falls")
                 hideWidget();
             } 
     }
