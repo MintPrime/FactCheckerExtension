@@ -18,7 +18,7 @@ function createWidget() {
         let dragOffsetY = 0;
 
         aifceWidget = document.createElement("div");            //define the widget. this is the window.
-        aifceWidget.id = "klippyWidgetRoot";                    //widget id.
+        aifceWidget.id = "aifceWidgetID";                    //widget id.
 
         Object.assign(aifceWidget.style, {                      //styling the widget.
                 position: "fixed",
@@ -101,8 +101,6 @@ function createWidget() {
         }
 }
 
-
-
 function showWidget() {   //open widget
         console.log("klippy rises")
         createWidget();
@@ -123,6 +121,34 @@ function toggleWidget() {     //if the widget is active, dismiss it. if it isn't
                 hideWidget();
             } 
     }
+
+function createBookmarkIcon() {
+    const tab = document.createElement("div");
+    tab.id = "aifceBookmarkID"
+    tab.textcontent = "K";
+
+    Object.assign(tab.style, {
+        position: "fixed",
+        top: "8%",
+        right: "0px",
+        backgroundColor: "#fef9e7",
+        border: "2px solid #e6e5e5",
+        borderRight: "none",
+        borderRadius: "8px 0 0 8px", // rounded on the left side only, flush against the edge on the right
+        padding: "10px 6px",
+        fontSize: "18px",
+        cursor: "pointer",
+        zIndex: "2147483647",
+        boxShadow: "-2px 0 6px rgba(0,0,0,0.2)"
+        }
+    );
+
+    tab.addEventListener("click", toggleWidget);
+
+    document.body.appendChild(tab);
+}
+
+createBookmarkIcon();
 
 chrome.runtime.onMessage.addListener((message) => { //interact with the background.js - browser actions call on functions through here
         if (message.type === "TOGGLE_KLIPPY") {
