@@ -2,6 +2,7 @@
     ...it's the widget. this replaces the v0.103 side panel.    */
 
 var aifceWidget = null;                                         //define the widget.
+var userInput = "";
 
 function createWidget() {
         console.log("DEBUG: document.body at widget creation:", document.body, "readyState: ", document.readyState);       //debug log to check if the page exists. 
@@ -18,7 +19,7 @@ function createWidget() {
         let dragOffsetY = 0;
 
         aifceWidget = document.createElement("div");            //define the widget. this is the window.
-        aifceWidget.id = "aifceWidgetID";                    //widget id.
+        aifceWidget.id = "aifceWidgetID";                       //widget id.
 
         Object.assign(aifceWidget.style, {                      //styling the widget.
                 position: "fixed",
@@ -57,12 +58,44 @@ function createWidget() {
         textElement.textContent = "yep, it's me. The Legally Distinct Paper Clip Klippy."; //temporary text to display in the window.
         textElement.style.marginTop = "16px";
 
-        aifceWidget.appendChild(closeButton);
-        aifceWidget.appendChild(textElement);
-        document.body.appendChild(aifceWidget);
+        const inputBox = document.createElement("textarea");                //create the text box for user input
+        inputBox.placeholder = "Ask me anything and I might answer.";
+
+        Object.assign(inputBox.style, {     //styling the text box
+            position: "absolute",
+            bottom: "8px",
+            left: "12px",
+            width: "calc(100% - 24px)",   // prevent the text box from being wider than the widget and overflowing. 24/2 = 12px margin
+            boxSizing: "border-box",
+            resize: "none",
+            fontFamily: "inherit",
+            fontSize: "13px"
+            }
+        );
+
+        inputBox.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {         //shift + enter is new line, don't trigger when shift is pressed.
+                e.preventDefault();                         //do not create a new line
+
+                const trimmedText = e.target.value.trim();  //trims input, serves to prevent empty messages being sent.
+                if (trimmedText === "") return;
+
+                userInput = trimmedText;
+                console.log("user input: ", userInput)
+                inputBox.value = "";                        //reset text box after sending.
+                }
+            }
+        );
+
+        aifceWidget.appendChild(closeButton);                       //append the close button to the widget window.
+        aifceWidget.appendChild(textElement);                       //append the placeholder text.
+        aifceWidget.appendChild(inputBox);                          //append the input text box.
+
+        document.body.appendChild(aifceWidget);                     //append the widget to the page.
 
         aifceWidget.addEventListener("mousedown", (e) => {          //dragging functionality for the widget.
             if (e.target === closeButton) return;                   //don't start dragging if the close button is clicked.
+            if (e.target === inputBox) return;                      //don't start dragging if the text box is clicked.
             if (e.button !== 0) return;                             //drag with left click only.
             
             isDragging = true;
@@ -73,11 +106,11 @@ function createWidget() {
         
             aifceWidget.addEventListener("contextmenu", (e) => { e.preventDefault(); });    // prevent the context menu from appearing while dragging. 
             e.preventDefault();                                     // prevent text selection while dragging.
-
-            document.addEventListener("mousemove", onDragMove);
-            document.addEventListener("mouseup", onDragEnd);
             }
         );
+
+        document.addEventListener("mousemove", onDragMove);         //this was in the context menu event listener "function". whoops!
+        document.addEventListener("mouseup", onDragEnd);
 
         function onDragMove(e) {                                    //dragging functionality for the widget.
             if (!isDragging) return;
@@ -122,12 +155,12 @@ function toggleWidget() {     //if the widget is active, dismiss it. if it isn't
             } 
     }
 
-function createBookmarkIcon() {
-    const tab = document.createElement("div");
+function createBookmarkIcon() {                 
+    const tab = document.createElement("div");          //create a little bookmark element.
     tab.id = "aifceBookmarkID"
-    tab.textcontent = "K";
+    tab.textContent = "📎";                             //📎
 
-    Object.assign(tab.style, {
+    Object.assign(tab.style, {                          //styling the bookmark
         position: "fixed",
         top: "8%",
         right: "0px",
@@ -145,7 +178,7 @@ function createBookmarkIcon() {
 
     tab.addEventListener("click", toggleWidget);
 
-    document.body.appendChild(tab);
+    document.body.appendChild(tab);             //append the bookmark
 }
 
 createBookmarkIcon();
