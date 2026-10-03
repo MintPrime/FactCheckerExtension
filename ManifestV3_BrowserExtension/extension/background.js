@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {  //create the context menu function. 
   chrome.contextMenus.create( {
-    id: "klippyCheck",
+    id: "aifceCheck",
     title: "klippy is this real",
     contexts: ["selection"]
       }
@@ -10,12 +10,12 @@ chrome.runtime.onInstalled.addListener(() => {  //create the context menu functi
 
 chrome.action.onClicked.addListener((tab) => { // toggle the widget when clicking the extension icon.
   chrome.tabs.sendMessage(tab.id, { type: "TOGGLE_KLIPPY" });
-}
+  }
 );
 
 chrome.contextMenus.onClicked.addListener((info, tab) => { // toggle the widget through the context menu when selecting text.
-  if (info.menuItemId === "klippyCheck") {
+  if (info.menuItemId === "aifceCheck") {
     chrome.tabs.sendMessage(tab.id, { type: "SHOW_KLIPPY" });
+    }
   }
-}
 );
