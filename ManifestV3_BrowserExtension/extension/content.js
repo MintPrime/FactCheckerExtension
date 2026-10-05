@@ -2,7 +2,8 @@
     ...it's the widget. this replaces the v0.103 side panel.    */
 
 var aifceWidget = null;                                         //define the widget.
-var userInput = "";
+var userInput = "";                                             //direct input from the user
+var userSelection = "";                                         //text content of selection after activation
 
 function createWidget() {
         console.log("DEBUG: document.body at widget creation:", document.body, "readyState: ", document.readyState);       //debug log to check if the page exists. 
@@ -36,8 +37,7 @@ function createWidget() {
                 fontFamily: "sans-serif",
                 fontSize: "14px",
                 display: "none"
-            }
-        );
+            });
 
         const closeButton = document.createElement("button");   //create the close button element.
         closeButton.textContent = "x";
@@ -50,8 +50,8 @@ function createWidget() {
                 fontSize: "16px",
                 cursor: "pointer",
                 lineHeight: "1"
-            }
-        );
+            });
+
         closeButton.addEventListener("click", hideWidget);      //close button functionality - trigger hideWidget on click.
 
         const textElement = document.createElement("div");
@@ -70,8 +70,7 @@ function createWidget() {
             resize: "none",
             fontFamily: "inherit",
             fontSize: "13px"
-            }
-        );
+            });
 
         inputBox.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && !e.shiftKey) {         //shift + enter is new line, don't trigger when shift is pressed.
@@ -84,8 +83,7 @@ function createWidget() {
                 console.log("user input: ", userInput)
                 inputBox.value = "";                        //reset text box after sending.
                 }
-            }
-        );
+            });
 
         aifceWidget.appendChild(closeButton);                       //append the close button to the widget window.
         aifceWidget.appendChild(textElement);                       //append the placeholder text.
@@ -106,11 +104,10 @@ function createWidget() {
         
             aifceWidget.addEventListener("contextmenu", (e) => { e.preventDefault(); });    // prevent the context menu from appearing while dragging. 
             e.preventDefault();                                     // prevent text selection while dragging.
-            }
-        );
 
-        document.addEventListener("mousemove", onDragMove);         //this was in the context menu event listener "function". whoops!
-        document.addEventListener("mouseup", onDragEnd);
+            document.addEventListener("mousemove", onDragMove);         //this was in the context menu event listener "function". whoops!
+            document.addEventListener("mouseup", onDragEnd);
+        });
 
         function onDragMove(e) {                                    //dragging functionality for the widget.
             if (!isDragging) return;
@@ -173,8 +170,7 @@ function createBookmarkIcon() {
         cursor: "pointer",
         zIndex: "2147483647",
         boxShadow: "-2px 0 6px rgba(0,0,0,0.2)"
-        }
-    );
+        });
 
     tab.addEventListener("click", toggleWidget);
 
@@ -187,9 +183,10 @@ chrome.runtime.onMessage.addListener((message) => { //interact with the backgrou
         if (message.type === "TOGGLE_KLIPPY") {
                 console.log("klippy hears your call");
                 toggleWidget();    
-            } else if (message.type === "SHOW_KLIPPY") {
-                        console.log("klippy answers your call");
-                        showWidget();
-                    }
+        } else if (message.type === "SHOW_KLIPPY") {
+                console.log("klippy answers your call");
+                userSelection = message.text || "";
+                console.log("user selection: ", userSelection);
+                showWidget();
             }
-)
+        });
