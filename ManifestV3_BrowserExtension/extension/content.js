@@ -15,7 +15,6 @@ function createWidget() {
             return;
         }
 
-        let isDragging = false;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
 
@@ -90,45 +89,40 @@ function createWidget() {
         aifceWidget.appendChild(inputBox);                          //append the input text box.
 
         document.body.appendChild(aifceWidget);                     //append the widget to the page.
-
-        aifceWidget.addEventListener("mousedown", (e) => {          //dragging functionality for the widget.
-            if (e.target === closeButton) return;                   //don't start dragging if the close button is clicked.
-            if (e.target === inputBox) return;                      //don't start dragging if the text box is clicked.
-            if (e.button !== 0) return;                             //drag with left click only.
-            
-            isDragging = true;
+        
+        aifceWidget.addEventListener("pointerdown", (e) => {                        //new dragging function. now based on pointer position.
+            if (e.target === closeButton || e.target === inputBox) return;          //don't drag pressing on close or text box
+            if (e.button !== 0) return                                              //drag with lmb only
 
             const rect = aifceWidget.getBoundingClientRect();       // get the current position of the widget.
             dragOffsetX = e.clientX - rect.left;
             dragOffsetY = e.clientY - rect.top;
-        
-            aifceWidget.addEventListener("contextmenu", (e) => { e.preventDefault(); });    // prevent the context menu from appearing while dragging. 
-            e.preventDefault();                                     // prevent text selection while dragging.
 
-            document.addEventListener("mousemove", onDragMove);         //this was in the context menu event listener "function". whoops!
-            document.addEventListener("mouseup", onDragEnd);
+            aifceWidget.setPointerCapture(e.pointerId);             //update cursor position
+            aifceWidget.style.cursor = "grabbing";                  // change the cursor icon to grabbing.
+            aifceWidget.style.userSelect = "none";                  //disables text selection
         });
 
-        function onDragMove(e) {                                    //dragging functionality for the widget.
-            if (!isDragging) return;
-            
-            aifceWidget.style.cursor = "grabbing";                  // change the cursor icon to grabbing.
+        aifceWidget.addEventListener("pointermove", (e) => {
+            if (!aifceWidget.hasPointerCapture(e.pointerId)) return;                                        //only move during drag.
 
-            const newLeft = e.clientX - dragOffsetX;
-            const newTop = e.clientY - dragOffsetY;
+            const maxLeft = document.documentElement.clientWidth - aifceWidget.offsetWidth;                 //set maximum positions inside the viewport 
+            const maxRight = document.documentElement.clientHeight - aifceWidget.offsetHeight;
+                            
+            aifceWidget.style.left = `${Math.min(Math.max(0, e.clientX - dragOffsetX), maxLeft)}px`;        //prevent the widget from being dragged outside the viewport
+            aifceWidget.style.top = `${Math.min(Math.max(0, e.clientY - dragOffsetY), maxRight)}px`;
+        });
 
-            aifceWidget.style.left = `${newLeft}px`;
-            aifceWidget.style.top = `${newTop}px`;
+        function endDrag(e) {
+            if (aifceWidget.hasPointerCapture(e.pointerId)) {
+                aifceWidget.releasePointerCapture(e.pointerId);     //release the pointer capture if there is one
+            }
+            aifceWidget.style.cursor = "default";                   //reset cursor styling
+            aifceWidget.style.userSelect = "";                      //resets text selection restriction
         }
-
-        function onDragEnd() {                                  //clear event listeners when dragging stops.
-            isDragging = false;
-
-            aifceWidget.style.cursor = "default";                  // change the cursor icon back to default.
-
-            document.removeEventListener("mousemove", onDragMove);
-            document.removeEventListener("mouseup", onDragEnd);
-        }
+        
+        aifceWidget.addEventListener("pointerup", endDrag);         
+        aifceWidget.addEventListener("pointercancel", endDrag);
 }
 
 function showWidget() {   //open widget
