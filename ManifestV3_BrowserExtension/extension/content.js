@@ -53,9 +53,24 @@ function createWidget() {
 
         closeButton.addEventListener("click", hideWidget);      //close button functionality - trigger hideWidget on click.
 
-        const textElement = document.createElement("div");
+        /*const textElement = document.createElement("div");
         textElement.textContent = "yep, it's me. The Legally Distinct Paper Clip Klippy."; //temporary text to display in the window.
-        textElement.style.marginTop = "16px";
+        textElement.style.marginTop = "16px";   */
+
+        const klippy = document.createElement("img");                           //klippy image 
+        klippy.src = chrome.runtime.getURL("images/klippy.png")                 //directory
+        klippy.alt = "Yep it's me, the Legally Distinct Paper Clip Klippy!";    //description
+        klippy.draggable = false;                                               //no you cannot move him
+
+        Object.assign(klippy.style, {
+            position: "absolute",
+            bottom: "calc(100% - 180px)",   // the image's bottom sits 180 pixels below the widget's top edge
+            left: "50%",
+            transform: "translateX(-50%)",  // image is horizontally centered
+            width: "360px",                 // placeholder size
+            height: "auto",                 // keeps aspect ratio
+            pointerEvents: "none"
+        });
 
         const inputBox = document.createElement("textarea");                //create the text box for user input
         inputBox.placeholder = "Ask me anything and I might answer.";
@@ -85,7 +100,8 @@ function createWidget() {
             });
 
         aifceWidget.appendChild(closeButton);                       //append the close button to the widget window.
-        aifceWidget.appendChild(textElement);                       //append the placeholder text.
+        aifceWidget.appendChild(klippy);                            //it's really him! 
+        //aifceWidget.appendChild(textElement);                     //append the placeholder text.
         aifceWidget.appendChild(inputBox);                          //append the input text box.
 
         document.body.appendChild(aifceWidget);                     //append the widget to the page.
