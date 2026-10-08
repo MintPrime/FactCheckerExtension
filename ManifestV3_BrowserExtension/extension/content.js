@@ -3,7 +3,8 @@
 
 var aifceWidget = null;                                         //define the widget.
 var userInput = "";                                             //direct input from the user
-var userSelection = "";                                         //text content of selection after activation
+//var userSelection = "";                                         //text content of selection after activation
+var userSelection = null;
 
 function createWidget() {
         console.log("DEBUG: document.body at widget creation:", document.body, "readyState: ", document.readyState);       //debug log to check if the page exists. 
@@ -141,6 +142,17 @@ function createWidget() {
         aifceWidget.addEventListener("pointercancel", endDrag);
 }
 
+function saveSelection(text) {
+    userSelection = {
+        source: "selection",
+        text: text,
+        pageUrl: location.href,
+        pageTitle: document.title,
+        savedAt: new Date().toISOString() 
+    };
+    console.log("user selection: ", userSelection);
+}
+
 function showWidget() {   //open widget
         console.log("klippy rises")
         createWidget();
@@ -195,8 +207,8 @@ chrome.runtime.onMessage.addListener((message) => { //interact with the backgrou
                 toggleWidget();    
         } else if (message.type === "SHOW_KLIPPY") {
                 console.log("klippy answers your call");
-                userSelection = message.text || "";
-                console.log("user selection: ", userSelection);
+                saveSelection(message.text || "");
+                //userSelection = message.text || "";
                 showWidget();
             }
         });
