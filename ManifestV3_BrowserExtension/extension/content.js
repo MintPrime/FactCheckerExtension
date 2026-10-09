@@ -1,161 +1,114 @@
-/*  content.js is klippy's window and lair. 
-    ...it's the widget. this replaces the v0.103 side panel.    */
-
 var aifceWidget = null;                                         //define the widget.
-var userInput = "";                                             //direct input from the user
-//var userSelection = "";                                         //text content of selection after activation
 var userSelection = null;
 
 function createWidget() {
-        console.log("DEBUG: document.body at widget creation:", document.body, "readyState: ", document.readyState);       //debug log to check if the page exists. 
-        if (aifceWidget) return;                                //if the widget exists already, exit. 
-    
-        if (!document.body) {                                   //if the page doesn't exist yet, add an event listener to do it when the page is ready. 
-            console.log("klippy: god hasn't let there be light yet, patience, patience...");    
-            document.addEventListener("DOMContentLoaded", createWidget);
-            return;
-        }
+    if (aifceWidget) return;                                //if the widget exists already, exit. 
 
-        let dragOffsetX = 0;
-        let dragOffsetY = 0;
+    if (!document.body) {                                   //if the page doesn't exist yet, add an event listener to do it when the page is ready. 
+        console.log("klippy: god hasn't let there be light yet, patience, patience...");    
+        document.addEventListener("DOMContentLoaded", createWidget);
+        return;
+    }
 
-        aifceWidget = document.createElement("div");            //define the widget. this is the window.
-        aifceWidget.id = "aifceWidgetID";                       //widget id.
+    const WIDGET_W = 360;
+    const WIDGET_H = 280;
+    const SKEW = 148;            // the parallelogram leans
+    const OVERFLOW = 32;         // upwards offset
 
-        Object.assign(aifceWidget.style, {                      //styling the widget.
-                position: "fixed",
-                top: "75px",
-                right: "33px",
-                width: "250px",
-                height: "150px",
-                backgroundColor: "#fef9e7",
-                border: "2px solid #e6e5e5",
-                borderRadius: "8px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                zIndex: "2147483647",                           // maximum z-index. this puts the window on top of everything.
-                padding: "12px",
-                fontFamily: "sans-serif",
-                fontSize: "14px",
-                display: "none"
-            });
+    let x = document.documentElement.clientWidth - WIDGET_W - 33;
+    let y = 75;
+    let grabX = 0, grabY = 0, maxX = 0, maxY = 0;
 
-        const closeButton = document.createElement("button");   //create the close button element.
-        closeButton.textContent = "x";
-        Object.assign(closeButton.style, {
-                position: "absolute",
-                top: "4px",
-                right: "8px",
-                border: "none",
-                background: "none",
-                fontSize: "16px",
-                cursor: "pointer",
-                lineHeight: "1"
-            });
+    aifceWidget = document.createElement("div");            //define the widget. this is the window
+    aifceWidget.id = "aifceWidgetID";                       //widget id
 
-        closeButton.addEventListener("click", hideWidget);      //close button functionality - trigger hideWidget on click.
+    Object.assign(aifceWidget.style, {                      //styling the widget
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: `${WIDGET_W}px`,
+        height: `${WIDGET_H}px`,
+        zIndex: "2147483647",
+        pointerEvents: "none",              // transparent container, only the bg itself can be dragged*
+        willChange: "transform",
+        transform: `translate(${x}px, ${y}px)`,
+        display: "none"
+    });
 
-        /*const textElement = document.createElement("div");
-        textElement.textContent = "yep, it's me. The Legally Distinct Paper Clip Klippy."; //temporary text to display in the window.
-        textElement.style.marginTop = "16px";   */
+    const paper = document.createElement("div");
+    Object.assign(paper.style, {
+        position: "absolute",
+        inset: "0",
+        backgroundColor: "#fef9e7",
+        clipPath: `polygon(${SKEW}px 0, 100% 0, calc(100% - ${SKEW}px) 100%, 0 100%)`,
+        pointerEvents: "auto",
+        cursor: "grab",
+        userSelect: "none"
+    });
 
-        const klippy = document.createElement("img");                           //klippy image 
-        klippy.src = chrome.runtime.getURL("images/klippy.png")                 //directory
-        klippy.alt = "Yep it's me, the Legally Distinct Paper Clip Klippy!";    //description
-        klippy.draggable = false;                                               //no you cannot move him
+    const contentSlot = document.createElement("div");   // an angular iframe is going to be slotted in here later
+    Object.assign(contentSlot.style, {
+        position: "absolute",
+        top: "12px",
+        bottom: "12px",
+        left: `${SKEW}px`,                  // inside the slanted edges at both top and bottom
+        right: `${SKEW}px`,
+        fontFamily: "sans-serif",
+        fontSize: "14px",
+        overflow: "hidden"
+    });
 
-        Object.assign(klippy.style, {
-            position: "absolute",
-            bottom: "calc(100% - 180px)",   // the image's bottom sits 180 pixels below the widget's top edge
-            left: "50%",
-            transform: "translateX(-50%)",  // image is horizontally centered
-            width: "360px",                 // placeholder size
-            height: "auto",                 // keeps aspect ratio
-            pointerEvents: "none"
-        });
+    const klippy = document.createElement("img");                           //klippy image 
+    klippy.src = chrome.runtime.getURL("images/klippy.png")                 //directory
+    klippy.alt = "Yep it's me, the Legally Distinct Paper Clip Klippy!";    //description
+    klippy.draggable = false;                                               //no you cannot move him
+    Object.assign(klippy.style, {
+        position: "absolute",
+        top: `-${OVERFLOW}px`,
+        left: "35%",
+        transform: "translateX(-35%)",
+        width: "160px",
+        height: "auto",
+        pointerEvents: "auto",
+        cursor: "grab",
+        userSelect: "none"
+    });
 
-        const inputBox = document.createElement("textarea");                //create the text box for user input
-        inputBox.placeholder = "Ask me anything and I might answer.";
+    function onDown(e) {
+        if (e.button !== 0) return;
+        grabX = e.clientX - x;
+        grabY = e.clientY - y;
+        maxX = document.documentElement.clientWidth - WIDGET_W;     // read once per drag
+        maxY = document.documentElement.clientHeight - WIDGET_H;
+        e.currentTarget.setPointerCapture(e.pointerId);
+        aifceWidget.style.cursor = "grabbing";
+    }
 
-        Object.assign(inputBox.style, {     //styling the text box
-            position: "absolute",
-            bottom: "8px",
-            left: "12px",
-            width: "calc(100% - 24px)",   // prevent the text box from being wider than the widget and overflowing. 24/2 = 12px margin
-            boxSizing: "border-box",
-            resize: "none",
-            fontFamily: "inherit",
-            fontSize: "13px"
-            });
+    function onUp() {aifceWidget.style.cursor = "";}
 
-        inputBox.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" && !e.shiftKey) {         //shift + enter is new line, don't trigger when shift is pressed.
-                e.preventDefault();                         //do not create a new line
+    function onMove(e) {
+        if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
+        x = Math.min(Math.max(0, e.clientX - grabX), maxX);
+        y = Math.min(Math.max(OVERFLOW, e.clientY - grabY), maxY);
+        aifceWidget.style.transform = `translate(${x}px, ${y}px)`;
+    }
 
-                const trimmedText = e.target.value.trim();  //trims input, serves to prevent empty messages being sent.
-                if (trimmedText === "") return;
+    [paper, klippy].forEach((handle) => {
+        handle.addEventListener("pointerdown", onDown);
+        handle.addEventListener("pointermove", onMove);
+        handle.addEventListener("lostpointercapture", onUp);
+    });
 
-                userInput = trimmedText;
-                console.log("user input: ", userInput)
-                inputBox.value = "";                        //reset text box after sending.
-                }
-            });
-
-        aifceWidget.appendChild(closeButton);                       //append the close button to the widget window.
-        aifceWidget.appendChild(klippy);                            //it's really him! 
-        //aifceWidget.appendChild(textElement);                     //append the placeholder text.
-        aifceWidget.appendChild(inputBox);                          //append the input text box.
-
-        document.body.appendChild(aifceWidget);                     //append the widget to the page.
-        
-        aifceWidget.addEventListener("pointerdown", (e) => {                        //new dragging function. now based on pointer position.
-            if (e.target === closeButton || e.target === inputBox) return;          //don't drag pressing on close or text box
-            if (e.button !== 0) return                                              //drag with lmb only
-
-            const rect = aifceWidget.getBoundingClientRect();       // get the current position of the widget.
-            dragOffsetX = e.clientX - rect.left;
-            dragOffsetY = e.clientY - rect.top;
-
-            aifceWidget.setPointerCapture(e.pointerId);             //update cursor position
-            aifceWidget.style.cursor = "grabbing";                  // change the cursor icon to grabbing.
-            aifceWidget.style.userSelect = "none";                  //disables text selection
-        });
-
-        aifceWidget.addEventListener("pointermove", (e) => {
-            if (!aifceWidget.hasPointerCapture(e.pointerId)) return;                                        //only move during drag.
-
-            const maxLeft = document.documentElement.clientWidth - aifceWidget.offsetWidth;                 //set maximum positions inside the viewport 
-            const maxRight = document.documentElement.clientHeight - aifceWidget.offsetHeight;
-                            
-            aifceWidget.style.left = `${Math.min(Math.max(0, e.clientX - dragOffsetX), maxLeft)}px`;        //prevent the widget from being dragged outside the viewport
-            aifceWidget.style.top = `${Math.min(Math.max(0, e.clientY - dragOffsetY), maxRight)}px`;
-        });
-
-        function endDrag(e) {
-            if (aifceWidget.hasPointerCapture(e.pointerId)) {
-                aifceWidget.releasePointerCapture(e.pointerId);     //release the pointer capture if there is one
-            }
-            aifceWidget.style.cursor = "default";                   //reset cursor styling
-            aifceWidget.style.userSelect = "";                      //resets text selection restriction
-        }
-        
-        aifceWidget.addEventListener("pointerup", endDrag);         
-        aifceWidget.addEventListener("pointercancel", endDrag);
-}
-
-function saveSelection(text) {
-    userSelection = {
-        source: "selection",
-        text: text,
-        pageUrl: location.href,
-        pageTitle: document.title,
-        savedAt: new Date().toISOString() 
-    };
-    console.log("user selection: ", userSelection);
+    aifceWidget.appendChild(paper);                             //he got his own surfboard yo
+    aifceWidget.appendChild(klippy);                            //it's really him! 
+    paper.appendChild(contentSlot);
+    document.body.appendChild(aifceWidget);                     //append the widget to the page.
 }
 
 function showWidget() {   //open widget
-        console.log("klippy rises")
         createWidget();
+        if (!aifceWidget) return;
+                console.log("klippy rises")
         aifceWidget.style.display = "block";
     }
 
@@ -207,7 +160,7 @@ chrome.runtime.onMessage.addListener((message) => { //interact with the backgrou
                 toggleWidget();    
         } else if (message.type === "SHOW_KLIPPY") {
                 console.log("klippy answers your call");
-                saveSelection(message.text || "");
+                //saveSelection(message.text || "");
                 //userSelection = message.text || "";
                 showWidget();
             }
