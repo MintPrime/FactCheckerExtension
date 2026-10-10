@@ -12,7 +12,7 @@ function createWidget() {
 
     const WIDGET_W = 360;
     const WIDGET_H = 280;
-    const SKEW = 148;            // the parallelogram leans
+    const SKEW = 128;            // the parallelogram leans
     const OVERFLOW = 32;         // upwards offset
 
     let x = document.documentElement.clientWidth - WIDGET_W - 33;
