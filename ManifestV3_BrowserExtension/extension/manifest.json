@@ -1,10 +1,10 @@
 {
   "manifest_version" : 3,
   "name" : "Klippy Fact Checker",
-  "version" : "0.120",
+  "version" : "0.121",
 
   "description" : "Klippy's Fact Checking Service. Select text or ask Klippy directly to confirm the validity of claims or statements through Google Gemini's google search function.",
-  "version_name" : "v0.120",
+  "version_name" : "v0.121",
 
   "permissions": ["contextMenus"],
   "host_permissions": ["http://localhost:3000/*"],
