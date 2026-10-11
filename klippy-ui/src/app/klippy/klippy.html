@@ -1,0 +1,8 @@
+<div class="stage">
+  @if (line(); as text) {
+    <div class="bubble" aria-live="polite">{{ text }}</div>
+  }
+  <button class="klippy" type="button" (click)="next()">
+    <img src="klippy.png" alt="Klippy, the Legally Distinct Paper Clip" />
+  </button>
+</div>

@@ -1,0 +1,12 @@
+/* src/styles.css */
+html,
+body {
+  margin: 0;
+  background: transparent;
+}
+:root {
+  color-scheme: light;
+}
+
+/* angular:styles/global:styles */
+/*# sourceMappingURL=styles.css.map */

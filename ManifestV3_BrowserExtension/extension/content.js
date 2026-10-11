@@ -10,6 +10,9 @@ function createWidget() {
         return;
     }
 
+    const KLIPPY_W = 160;
+    const BUBBLE_W = 240;
+    const FRAME_H = 400;
     const WIDGET_W = 360;
     const WIDGET_H = 280;
     const SKEW = 128;            // the parallelogram leans
@@ -58,20 +61,34 @@ function createWidget() {
         overflow: "hidden"
     });
 
-    const klippy = document.createElement("img");                           //klippy image 
-    klippy.src = chrome.runtime.getURL("images/klippy.png")                 //directory
-    klippy.alt = "Yep it's me, the Legally Distinct Paper Clip Klippy!";    //description
-    klippy.draggable = false;                                               //no you cannot move him
-    Object.assign(klippy.style, {
+    // const klippy = document.createElement("img");                           //klippy image 
+    // klippy.src = chrome.runtime.getURL("images/klippy.png")                 //directory
+    // klippy.alt = "Yep it's me, the Legally Distinct Paper Clip Klippy!";    //description
+    // klippy.draggable = false;                                               //no you cannot move him
+    // Object.assign(klippy.style, {
+    //     position: "absolute",
+    //     top: `-${OVERFLOW}px`,
+    //     left: "35%",
+    //     transform: "translateX(-35%)",
+    //     width: "160px",
+    //     height: "auto",
+    //     pointerEvents: "none",
+    //     cursor: "grab",
+    //     userSelect: "none"
+    // });
+
+    const frame = document.createElement("iframe");
+        frame.src = chrome.runtime.getURL("app/index.html");
+        frame.title = "Klippy";
+        Object.assign(frame.style, {
         position: "absolute",
         top: `-${OVERFLOW}px`,
-        left: "35%",
-        transform: "translateX(-35%)",
-        width: "160px",
-        height: "auto",
-        pointerEvents: "auto",
-        cursor: "grab",
-        userSelect: "none"
+        left: `${Math.round(WIDGET_W * 0.35 - KLIPPY_W * 0.35) - BUBBLE_W}px`,
+        width: `${KLIPPY_W + BUBBLE_W}px`,
+        height: `${FRAME_H}px`,
+        border: "none",
+        background: "transparent",
+        colorScheme: "light"          // matches the app, so the browser doesn't paint an opaque backdrop
     });
 
     function onDown(e) {
@@ -93,14 +110,15 @@ function createWidget() {
         aifceWidget.style.transform = `translate(${x}px, ${y}px)`;
     }
 
-    [paper, klippy].forEach((handle) => {
+    [paper].forEach((handle) => {
         handle.addEventListener("pointerdown", onDown);
         handle.addEventListener("pointermove", onMove);
         handle.addEventListener("lostpointercapture", onUp);
     });
 
     aifceWidget.appendChild(paper);                             //he got his own surfboard yo
-    aifceWidget.appendChild(klippy);                            //it's really him! 
+    aifceWidget.appendChild(frame);
+    //aifceWidget.appendChild(klippy);                            //it's really him! 
     paper.appendChild(contentSlot);
     document.body.appendChild(aifceWidget);                     //append the widget to the page.
 }
