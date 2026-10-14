@@ -4,6 +4,6 @@ import { Klippy } from './klippy/klippy';
 @Component({
   selector: 'app-root',
   imports: [Klippy],
-  templateUrl: './app.html',
+  template: '<app-klippy />',
 })
 export class App {}

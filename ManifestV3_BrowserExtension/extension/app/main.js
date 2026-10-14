@@ -30228,12 +30228,12 @@ var Klippy = class _Klippy {
       \u0275\u0275advance();
       \u0275\u0275conditional((tmp_0_0 = ctx.line()) ? 1 : -1, tmp_0_0);
     }
-  }, styles: ['\n.stage[_ngcontent-%COMP%] {\n  position: fixed;\n  inset: 0;\n}\n.klippy[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 460px;\n  padding: 0;\n  border: 0;\n  background: none;\n  cursor: pointer;\n}\n.klippy[_ngcontent-%COMP%]   img[_ngcontent-%COMP%] {\n  display: block;\n  width: 100%;\n  height: auto;\n  pointer-events: none;\n}\n.bubble[_ngcontent-%COMP%] {\n  position: absolute;\n  left: 8px;\n  top: 20%;\n  width: 210px;\n  box-sizing: border-box;\n  padding: 10px 12px;\n  background: #fff;\n  border: 2px solid #333;\n  border-radius: 12px;\n  font: 14px/1.35 sans-serif;\n}\n.bubble[_ngcontent-%COMP%]::after {\n  content: "";\n  position: absolute;\n  right: -8px;\n  top: 22px;\n  width: 12px;\n  height: 12px;\n  background: #fff;\n  border-top: 2px solid #333;\n  border-right: 2px solid #333;\n  transform: rotate(45deg);\n}\n/*# sourceMappingURL=klippy.css.map */'] });
+  }, styles: ['\n.stage[_ngcontent-%COMP%] {\n  position: fixed;\n  inset: 0;\n}\n.klippy[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 160px;\n  padding: 0;\n  border: 0;\n  background: none;\n  cursor: pointer;\n}\n.klippy[_ngcontent-%COMP%]   img[_ngcontent-%COMP%] {\n  display: block;\n  width: 100%;\n  height: auto;\n  pointer-events: none;\n}\n.bubble[_ngcontent-%COMP%] {\n  position: absolute;\n  left: 8px;\n  top: 20%;\n  width: 210px;\n  box-sizing: border-box;\n  padding: 10px 12px;\n  background: #fff;\n  border: 2px solid #333;\n  border-radius: 12px;\n  font: 14px/1.35 sans-serif;\n}\n.bubble[_ngcontent-%COMP%]::after {\n  content: "";\n  position: absolute;\n  right: -8px;\n  top: 22px;\n  width: 12px;\n  height: 12px;\n  background: #fff;\n  border-top: 2px solid #333;\n  border-right: 2px solid #333;\n  transform: rotate(45deg);\n}\n/*# sourceMappingURL=klippy.css.map */'] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(Klippy, [{
     type: Component,
-    args: [{ selector: "app-klippy", template: '<div class="stage">\n  @if (line(); as text) {\n    <div class="bubble" aria-live="polite">{{ text }}</div>\n  }\n  <button class="klippy" type="button" (click)="next()">\n    <img src="klippy.png" alt="Klippy, the Legally Distinct Paper Clip" />\n  </button>\n</div>', styles: ['/* src/app/klippy/klippy.css */\n.stage {\n  position: fixed;\n  inset: 0;\n}\n.klippy {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 460px;\n  padding: 0;\n  border: 0;\n  background: none;\n  cursor: pointer;\n}\n.klippy img {\n  display: block;\n  width: 100%;\n  height: auto;\n  pointer-events: none;\n}\n.bubble {\n  position: absolute;\n  left: 8px;\n  top: 20%;\n  width: 210px;\n  box-sizing: border-box;\n  padding: 10px 12px;\n  background: #fff;\n  border: 2px solid #333;\n  border-radius: 12px;\n  font: 14px/1.35 sans-serif;\n}\n.bubble::after {\n  content: "";\n  position: absolute;\n  right: -8px;\n  top: 22px;\n  width: 12px;\n  height: 12px;\n  background: #fff;\n  border-top: 2px solid #333;\n  border-right: 2px solid #333;\n  transform: rotate(45deg);\n}\n/*# sourceMappingURL=klippy.css.map */\n'] }]
+    args: [{ selector: "app-klippy", template: '<div class="stage">\n  @if (line(); as text) {\n    <div class="bubble" aria-live="polite">{{ text }}</div>\n  }\n  <button class="klippy" type="button" (click)="next()">\n    <img src="klippy.png" alt="Klippy, the Legally Distinct Paper Clip" />\n  </button>\n</div>', styles: ['/* src/app/klippy/klippy.css */\n.stage {\n  position: fixed;\n  inset: 0;\n}\n.klippy {\n  position: absolute;\n  top: 0;\n  right: 0;\n  width: 160px;\n  padding: 0;\n  border: 0;\n  background: none;\n  cursor: pointer;\n}\n.klippy img {\n  display: block;\n  width: 100%;\n  height: auto;\n  pointer-events: none;\n}\n.bubble {\n  position: absolute;\n  left: 8px;\n  top: 20%;\n  width: 210px;\n  box-sizing: border-box;\n  padding: 10px 12px;\n  background: #fff;\n  border: 2px solid #333;\n  border-radius: 12px;\n  font: 14px/1.35 sans-serif;\n}\n.bubble::after {\n  content: "";\n  position: absolute;\n  right: -8px;\n  top: 22px;\n  width: 12px;\n  height: 12px;\n  background: #fff;\n  border-top: 2px solid #333;\n  border-right: 2px solid #333;\n  transform: rotate(45deg);\n}\n/*# sourceMappingURL=klippy.css.map */\n'] }]
   }], null, null);
 })();
 (() => {
@@ -30254,7 +30254,11 @@ var App = class _App {
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(App, [{
     type: Component,
-    args: [{ selector: "app-root", imports: [Klippy], template: "<app-klippy />" }]
+    args: [{
+      selector: "app-root",
+      imports: [Klippy],
+      template: "<app-klippy />"
+    }]
   }], null, null);
 })();
 (() => {
@@ -30263,5 +30267,5 @@ var App = class _App {
 
 // src/main.ts
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));
-//# debugId=77feeada-6681-5e0b-be5f-7e7a23be0247
+//# debugId=a8c456eb-d9b5-5dc4-bf76-12aeadb45ede
 //# sourceMappingURL=main.js.map

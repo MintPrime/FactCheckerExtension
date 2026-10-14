@@ -4,7 +4,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 460px;                 /* same as KLIPPY_W in content.js */
+  width: 160px;                 /* = KLIPPY_W in content.js */
   padding: 0;
   border: 0;
   background: none;
@@ -16,7 +16,7 @@
   position: absolute;
   left: 8px;
   top: 20%;
-  width: 210px;                 /* must fit inside BUBBLE_W in content.js */
+  width: 210px;                 /* fits in the 240px left of Klippy */
   box-sizing: border-box;
   padding: 10px 12px;
   background: #fff;
@@ -24,7 +24,7 @@
   border-radius: 12px;
   font: 14px/1.35 sans-serif;
 }
-.bubble::after {                /* the tail, pointing right at Klippy */
+.bubble::after {                /* tail pointing at Klippy */
   content: "";
   position: absolute;
   right: -8px;

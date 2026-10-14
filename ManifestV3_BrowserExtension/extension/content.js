@@ -12,7 +12,7 @@ function createWidget() {
 
     const KLIPPY_W = 160;
     const BUBBLE_W = 240;
-    const FRAME_H = 400;
+    const FRAME_H = 282;
     const WIDGET_W = 360;
     const WIDGET_H = 280;
     const SKEW = 128;            // the parallelogram leans
@@ -32,7 +32,7 @@ function createWidget() {
         width: `${WIDGET_W}px`,
         height: `${WIDGET_H}px`,
         zIndex: "2147483647",
-        pointerEvents: "none",              // transparent container, only the bg itself can be dragged*
+        pointerEvents: "auto",              // transparent container, only the bg itself can be dragged*
         willChange: "transform",
         transform: `translate(${x}px, ${y}px)`,
         display: "none"

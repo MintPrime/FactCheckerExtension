@@ -17,10 +17,8 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "outputPath": {
-              "base": "F:/vsc_projects/FactCheckerExtension/ManifestV3_BrowserExtension/app",
-              "browser": ""
-            },
+            "outputPath": { "base": "../ManifestV3_BrowserExtension/extension/app", "browser": "" },
+            "baseHref": "./",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
